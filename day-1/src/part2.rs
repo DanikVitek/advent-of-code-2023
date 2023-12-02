@@ -11,18 +11,24 @@ pub fn process(input: &str) -> miette::Result<usize, AocError> {
 fn process_line(line: &str) -> usize {
     let mut digits = Digits::new(line);
     let first = digits.next().expect("invalid input");
-    let last = digits.last().unwrap_or(first);
+    let last = digits.next_back().unwrap_or(first);
 
     (first * 10 + last) as usize
 }
 
 struct Digits<'a> {
     input: &'a str,
+    left_start: usize,
+    right_start: usize,
 }
 
 impl<'a> Digits<'a> {
     fn new(input: &'a str) -> Self {
-        Self { input }
+        Self {
+            input,
+            left_start: 0,
+            right_start: input.len(),
+        }
     }
 }
 
@@ -30,11 +36,24 @@ impl<'a> Iterator for Digits<'a> {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        for i in 0..self.input.len() {
+        for i in self.left_start..self.input.len() {
             let Ok((_, digit)) = digit(&self.input[i..]) else {
                 continue;
             };
-            self.input = &self.input[i + 1..];
+            self.left_start = i + 1;
+            return Some(digit);
+        }
+        None
+    }
+}
+
+impl<'a> DoubleEndedIterator for Digits<'a> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        for i in (0..self.right_start).rev() {
+            let Ok((_, digit)) = digit(&self.input[i..]) else {
+                continue;
+            };
+            self.right_start = i;
             return Some(digit);
         }
         None
