@@ -1,16 +1,14 @@
-use crate::custom_error::AocError;
-
-pub fn process(input: &str) -> miette::Result<usize, AocError> {
-    Ok(input
+pub fn process(input: &str) -> u32 {
+    input
         .lines()
         .map(|line| {
             let mut digits = line.chars().filter_map(char_to_digit);
             let first = digits.next().expect("invalid input");
             let last = digits.next_back().unwrap_or(first);
 
-            (first * 10 + last) as usize
+            (first * 10 + last) as u32
         })
-        .sum())
+        .sum()
 }
 
 fn char_to_digit(ch: char) -> Option<u8> {
@@ -25,12 +23,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_process() -> miette::Result<()> {
+    fn test_process() {
         let input = "1abc2
         pqr3stu8vwx
         a1b2c3d4e5f
         treb7uchet";
-        assert_eq!(process(input)?, 142);
-        Ok(())
+        assert_eq!(process(input), 142);
     }
 }

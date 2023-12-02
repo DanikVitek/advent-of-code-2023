@@ -1,15 +1,13 @@
-use crate::custom_error::AocError;
-
-pub fn process(input: &str) -> miette::Result<usize, AocError> {
-    Ok(input.lines().map(process_line).sum())
+pub fn process(input: &str) -> u32 {
+    input.lines().map(process_line).sum()
 }
 
-fn process_line(line: &str) -> usize {
+fn process_line(line: &str) -> u32 {
     let mut digits = Digits::new(line);
     let first = digits.next().expect("invalid input");
     let last = digits.next_back().unwrap_or(first);
 
-    (first * 10 + last) as usize
+    (first * 10 + last) as u32
 }
 
 struct Digits<'a> {
@@ -107,12 +105,12 @@ mod tests {
     /// it tests two overlapping numbers
     /// where the second number should succeed
     #[case("fivezg8jmf6hrxnhgxxttwoneg", 51)]
-    fn test_process_line(#[case] input: &str, #[case] expected: usize) {
+    fn test_process_line(#[case] input: &str, #[case] expected: u32) {
         assert_eq!(process_line(input), expected);
     }
 
     #[test]
-    fn test_process() -> miette::Result<()> {
+    fn test_process() {
         let input = "two1nine
         eightwothree
         abcone2threexyz
@@ -120,7 +118,6 @@ mod tests {
         4nineeightseven2
         zoneight234
         7pqrstsixteen";
-        assert_eq!(process(input)?, 281);
-        Ok(())
+        assert_eq!(process(input), 281);
     }
 }

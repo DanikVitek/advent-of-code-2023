@@ -1,12 +1,11 @@
 use day_1::part2::process;
-use miette::Context;
 
 #[cfg(feature = "dhat-heap")]
 #[global_allocator]
 static ALLOC: dhat::Alloc = dhat::Alloc;
 
 #[cfg_attr(not(feature = "dhat-heap"), tracing::instrument)]
-fn main() -> miette::Result<()> {
+fn main() {
     #[cfg(feature = "dhat-heap")]
     let _profiler = dhat::Profiler::new_heap();
 
@@ -14,8 +13,6 @@ fn main() -> miette::Result<()> {
     tracing_subscriber::fmt::init();
 
     let file = include_str!("../../input.txt");
-    let result = process(file).context("process part 2")?;
-    println!("{}", result);
-
-    Ok(())
+    let result = process(file);
+    println!("{result}");
 }
