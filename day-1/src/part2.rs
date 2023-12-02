@@ -1,7 +1,3 @@
-use nom::{
-    branch::alt, bytes::complete::tag, character::complete::char, combinator::value, IResult,
-};
-
 use crate::custom_error::AocError;
 
 pub fn process(input: &str) -> miette::Result<usize, AocError> {
@@ -18,16 +14,16 @@ fn process_line(line: &str) -> usize {
 
 struct Digits<'a> {
     input: &'a str,
-    left_start: usize,
-    right_start: usize,
+    start: usize,
+    end: usize,
 }
 
 impl<'a> Digits<'a> {
     fn new(input: &'a str) -> Self {
         Self {
             input,
-            left_start: 0,
-            right_start: input.len(),
+            start: 0,
+            end: input.len(),
         }
     }
 }
@@ -36,11 +32,11 @@ impl<'a> Iterator for Digits<'a> {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        for i in self.left_start..self.input.len() {
-            let Ok((_, digit)) = digit(&self.input[i..]) else {
+        for i in self.start..self.input.len() {
+            let Some(digit) = digit_at_start(&self.input[i..]) else {
                 continue;
             };
-            self.left_start = i + 1;
+            self.start = i + 1;
             return Some(digit);
         }
         None
@@ -49,47 +45,48 @@ impl<'a> Iterator for Digits<'a> {
 
 impl<'a> DoubleEndedIterator for Digits<'a> {
     fn next_back(&mut self) -> Option<Self::Item> {
-        for i in (0..self.right_start).rev() {
-            let Ok((_, digit)) = digit(&self.input[i..]) else {
+        for j in (1..=self.end).rev() {
+            let Some(digit) = digit_at_end(&self.input[..j]) else {
                 continue;
             };
-            self.right_start = i;
+            self.end = j;
             return Some(digit);
         }
         None
     }
 }
 
-fn spelled_digit(input: &str) -> IResult<&str, u8> {
-    alt((
-        value(1, tag("one")),
-        value(2, tag("two")),
-        value(3, tag("three")),
-        value(4, tag("four")),
-        value(5, tag("five")),
-        value(6, tag("six")),
-        value(7, tag("seven")),
-        value(8, tag("eight")),
-        value(9, tag("nine")),
-    ))(input)
+const CONVERSIONS: [(&str, u8); 18] = [
+    ("1", 1),
+    ("2", 2),
+    ("3", 3),
+    ("4", 4),
+    ("5", 5),
+    ("6", 6),
+    ("7", 7),
+    ("8", 8),
+    ("9", 9),
+    ("one", 1),
+    ("two", 2),
+    ("three", 3),
+    ("four", 4),
+    ("five", 5),
+    ("six", 6),
+    ("seven", 7),
+    ("eight", 8),
+    ("nine", 9),
+];
+
+fn digit_at_start(input: &str) -> Option<u8> {
+    CONVERSIONS
+        .into_iter()
+        .find_map(|(s, c)| input.starts_with(s).then_some(c))
 }
 
-fn ascii_digit(input: &str) -> IResult<&str, u8> {
-    alt((
-        value(1, char('1')),
-        value(2, char('2')),
-        value(3, char('3')),
-        value(4, char('4')),
-        value(5, char('5')),
-        value(6, char('6')),
-        value(7, char('7')),
-        value(8, char('8')),
-        value(9, char('9')),
-    ))(input)
-}
-
-fn digit(input: &str) -> IResult<&str, u8> {
-    alt((ascii_digit, spelled_digit))(input)
+fn digit_at_end(input: &str) -> Option<u8> {
+    CONVERSIONS
+        .into_iter()
+        .find_map(|(s, c)| input.ends_with(s).then_some(c))
 }
 
 #[cfg(test)]
