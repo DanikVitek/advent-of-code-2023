@@ -14,9 +14,9 @@ lint day:
 test day part:
     cargo nextest run -p {{day}} {{part}}
 bench-all:
-    cargo bench -q | save benchmarks.txt
+    cargo bench -q | save benchmarks/benchmarks.txt
 bench day part:
-    cargo bench --bench {{day}} {{part}} | save --append {{day}}.bench.txt
+    cargo bench --bench {{day}} {{part}} | save --append benchmarks/{{day}}.bench.txt
 flamegraph day part:
     cargo flamegraph --profile flamegraph --root --package {{day}} --bin {{part}} -o flamegraphs/{{day}}_{{part}}.svg
 dhat day part:

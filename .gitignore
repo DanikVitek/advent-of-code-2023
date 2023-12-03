@@ -1,5 +1,4 @@
 /target
-
 /flamegraphs
-day-1.bench.txt
+/benchmarks
 dhat-heap.json
