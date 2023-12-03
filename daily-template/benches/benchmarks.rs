@@ -5,18 +5,14 @@ fn main() {
     divan::main();
 }
 
+const INPUT: &str = include_str!("../input.txt");
+
 #[divan::bench]
 fn part1() {
-    part1::process(divan::black_box(include_str!(
-        "../input1.txt",
-    )))
-    .unwrap();
+    part1::process(divan::black_box(INPUT));
 }
 
 #[divan::bench]
 fn part2() {
-    part2::process(divan::black_box(include_str!(
-        "../input2.txt",
-    )))
-    .unwrap();
+    part2::process(divan::black_box(INPUT));
 }

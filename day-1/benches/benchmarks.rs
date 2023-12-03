@@ -8,10 +8,10 @@ const INPUT: &str = include_str!("../input.txt");
 
 #[divan::bench]
 fn part1() {
-    part1::process(divan::black_box(INPUT)).unwrap();
+    part1::process(divan::black_box(INPUT));
 }
 
 #[divan::bench]
 fn part2() {
-    part2::process(divan::black_box(INPUT)).unwrap();
+    part2::process(divan::black_box(INPUT));
 }

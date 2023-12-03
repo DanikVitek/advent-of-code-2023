@@ -1,4 +1,4 @@
-use {{crate_name}}::part1::process;
+use day_2::part1::process;
 
 #[cfg(feature = "dhat-heap")]
 #[global_allocator]
@@ -8,7 +8,7 @@ fn main() {
     #[cfg(feature = "dhat-heap")]
     let _profiler = dhat::Profiler::new_heap();
 
-    let file = include_str!("../../input1.txt");
+    let file = include_str!("../../input.txt");
     let result = process(file);
     println!("{}", result);
 }
