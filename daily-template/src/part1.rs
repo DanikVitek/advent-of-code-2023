@@ -1,4 +1,4 @@
-pub fn process(_input: &str) -> String {
+pub fn process(_input: &str) -> u32 {
     todo!("{{project-name}} - part 1");
 }
 
@@ -10,6 +10,6 @@ mod tests {
     fn test_process() {
         todo!("haven't built test yet");
         // let input = "";
-        // assert_eq!("", process(input));
+        // assert_eq!(0, process(input));
     }
 }
