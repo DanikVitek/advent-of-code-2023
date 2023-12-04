@@ -4,7 +4,7 @@ set shell := ["nu.exe", "-c"]
 work day part:
     cargo watch -x "check -p {{day}}" -s "just test {{day}} {{part}}" -s "just lint {{day}}" -s "just bench {{day}} {{part}}" -s "just flamegraph {{day}} {{part}}"
 run day part:
-    cargo run -p {{day}} --bin {{part}}
+    cargo run -p {{day}} --bin {{part}} -r
 www-watch:
     RUST_LOG=info cargo +nightly leptos watch --project www
 www-build:
