@@ -1,5 +1,5 @@
 pub fn process(_input: &str) -> String {
-    todo!("day 01 - part 1");
+    todo!("{{project-name}} - part 1");
 }
 
 #[cfg(test)]
@@ -9,7 +9,7 @@ mod tests {
     #[test]
     fn test_process() {
         todo!("haven't built test yet");
-        let input = "";
-        assert_eq!("", process(input));
+        // let input = "";
+        // assert_eq!("", process(input));
     }
 }
