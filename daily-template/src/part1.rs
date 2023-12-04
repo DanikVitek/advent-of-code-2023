@@ -4,7 +4,7 @@ pub fn process(_input: &str) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
     #[test]
     fn test_process() {
