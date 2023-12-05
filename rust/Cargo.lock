@@ -161,18 +161,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "day-4"
-version = "0.1.0"
-dependencies = [
- "dhat",
- "divan",
- "itertools",
- "nom",
- "rstest",
- "thiserror",
-]
-
-[[package]]
 name = "dhat"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
