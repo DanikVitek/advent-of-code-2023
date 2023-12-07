@@ -1,8 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
-const day4 = @import("day4.zig");
-const days = [_]type{day4};
+const days = [_]type{ @import("day4.zig"), @import("day5.zig") };
 
 pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
