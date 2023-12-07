@@ -18,12 +18,13 @@ pub fn run(allocator: Allocator, stdout: File.Writer) !void {
         try stdout.print(")\n", .{});
     }
     {
-        var timer = try std.time.Timer.start();
-        const result = try part2.run(allocator, input);
-        const time = timer.lap();
-        try stdout.print("Day 5 Part 2: {d}\t(Time: ", .{result});
-        try printNanos(stdout, time);
-        try stdout.print(")\n", .{});
+        // var timer = try std.time.Timer.start();
+        // const result = try part2.run(allocator, input);
+        // const time = timer.lap();
+        // try stdout.print("Day 5 Part 2: {d}\t(Time: ", .{result});
+        // try printNanos(stdout, time);
+        // try stdout.print(")\n", .{});
+        try stdout.print("Day 5 Part 2: 23738616\t(Skip. Time: >1m)\n", .{}); // Skip
     }
 }
 
