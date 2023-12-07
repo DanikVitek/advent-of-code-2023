@@ -25,6 +25,7 @@ pub fn run(allocator: Allocator, stdout: File.Writer) !void {
         // try printNanos(stdout, time);
         // try stdout.print(")\n", .{});
         try stdout.print("Day 5 Part 2: 23738616\t(Skip. Time: >1m)\n", .{}); // Skip
+        // look at this: https://zigbin.io/0688c6
     }
 }
 
