@@ -42,7 +42,7 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
             @floatFromInt(try fmt.parseInt(u32, distance_pet_time.first, 10)),
             @floatFromInt(try fmt.parseInt(u32, distance_pet_time.second, 10)),
         };
-        const power = @ceil(@log10(distance_and_time));
+        const power = @Vector(2, f64){ @floatFromInt(distance_pet_time.first.len), @floatFromInt(distance_pet_time.second.len) };
         actual_distance_and_time = actual_distance_and_time * @Vector(2, f64){ math.pow(f64, 10, power[0]), math.pow(f64, 10, power[1]) } + distance_and_time;
     }
     const actual_time_category = actual_distance_and_time[1];
