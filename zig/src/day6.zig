@@ -7,11 +7,12 @@ const File = std.fs.File;
 const printNanos = @import("main.zig").printNanos;
 
 pub fn run(allocator: Allocator, stdout: File.Writer) !void {
+    _ = allocator;
     const input = @embedFile("day6/input.txt");
 
     {
         var timer = try std.time.Timer.start();
-        const result = try part1.run(allocator, input);
+        const result = try part1.run(input);
         const time = timer.lap();
         try stdout.print("Day 6 Part 1: {d}\t(Time: ", .{result});
         try printNanos(stdout, time);
@@ -19,7 +20,7 @@ pub fn run(allocator: Allocator, stdout: File.Writer) !void {
     }
     {
         var timer = try std.time.Timer.start();
-        const result = try part2.run(allocator, input);
+        const result = try part2.run(input);
         const time = timer.lap();
         try stdout.print("Day 6 Part 2: {d}\t(Time: ", .{result});
         try printNanos(stdout, time);

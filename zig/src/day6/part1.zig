@@ -27,8 +27,7 @@ const NL = switch (builtin.os.tag) {
 // t2 = (T + sqrt(T^2 - 4 * 1 * S*)) / 2 = (T + sqrt(T^2 - 4 * S*)) / 2
 // S in (t1, t2)
 
-pub fn run(allocator: Allocator, input: []const u8) !u32 {
-    _ = allocator;
+pub fn run(input: []const u8) !u32 {
     var lines = switch (builtin.os.tag) {
         .windows => mem.splitSequence(u8, input, NL),
         else => mem.splitSequence(u8, input, NL),
