@@ -66,14 +66,8 @@ fn zip(iter1: anytype, iter2: anytype) struct {
     iter1: @TypeOf(iter1),
     iter2: @TypeOf(iter2),
 
-    const T = @TypeOf(blk: {
-        var iter = iter1;
-        break :blk iter.next().?;
-    });
-    const U = @TypeOf(blk: {
-        var iter = iter2;
-        break :blk iter.next().?;
-    });
+    const T = @typeInfo(@typeInfo(@TypeOf(@TypeOf(iter1).next)).Fn.return_type.?).Optional.child;
+    const U = @typeInfo(@typeInfo(@TypeOf(@TypeOf(iter2).next)).Fn.return_type.?).Optional.child;
 
     const Pair = struct {
         first: T,
