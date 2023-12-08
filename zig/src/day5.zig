@@ -30,6 +30,6 @@ pub fn run(allocator: Allocator, stdout: File.Writer) !void {
 }
 
 test {
-    _ = @import("day5/part1.zig");
-    _ = @import("day5/part2.zig");
+    _ = part1;
+    _ = part2;
 }

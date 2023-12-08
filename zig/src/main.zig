@@ -15,7 +15,7 @@ pub fn main() !void {
 
     inline for (days) |day| {
         try day.run(allocator, stdout);
-        _ = arena.reset(.free_all);
+        std.debug.assert(arena.reset(.free_all));
     }
 }
 
@@ -35,5 +35,5 @@ pub fn printNanos(stdout: std.fs.File.Writer, nanos: u64) !void {
 }
 
 test {
-    _ = @import("day4.zig");
+    _ = days;
 }

@@ -170,3 +170,9 @@ fn seedToLocation(
     const humidity = temperature_to_humidity.map(temperature);
     return humidity_to_location.map(humidity);
 }
+
+test "simple input" {
+    const testing = std.testing;
+    const input = @embedFile("test_input.txt");
+    try testing.expectEqual(@as(u32, 35), try run(testing.allocator, input));
+}

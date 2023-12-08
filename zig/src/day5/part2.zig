@@ -16,33 +16,12 @@ pub fn run(allocator: Allocator, input: []const u8) !u32 {
 
     var seeds = Seeds{ .iter = std.mem.splitScalar(u8, blocks.first()[7..], ' ') };
 
-    var seed_to_soil = try Map.parse(allocator, blocks.next().?);
-    defer seed_to_soil.deinit();
-    var soil_to_fertilizer = try Map.parse(allocator, blocks.next().?);
-    defer soil_to_fertilizer.deinit();
-    var fertilizer_to_water = try Map.parse(allocator, blocks.next().?);
-    defer fertilizer_to_water.deinit();
-    var water_to_light = try Map.parse(allocator, blocks.next().?);
-    defer water_to_light.deinit();
-    var light_to_temperature = try Map.parse(allocator, blocks.next().?);
-    defer light_to_temperature.deinit();
-    var temperature_to_humidity = try Map.parse(allocator, blocks.next().?);
-    defer temperature_to_humidity.deinit();
-    var humidity_to_location = try Map.parse(allocator, blocks.next().?);
-    defer humidity_to_location.deinit();
+    var mappings = try Mappings.parse(allocator, blocks.rest());
+    defer mappings.deinit();
 
     var closest_location: u32 = std.math.maxInt(u32);
     while (try seeds.next()) |seed| {
-        closest_location = @min(closest_location, seedToLocation(
-            seed,
-            &seed_to_soil,
-            &soil_to_fertilizer,
-            &fertilizer_to_water,
-            &water_to_light,
-            &light_to_temperature,
-            &temperature_to_humidity,
-            &humidity_to_location,
-        ));
+        closest_location = @min(closest_location, mappings.apply(seed));
     }
 
     return closest_location;
@@ -182,21 +161,67 @@ const Map = struct {
     }
 };
 
-fn seedToLocation(
-    seed: u32,
-    seed_to_soil: *const Map,
-    soil_to_fertilizer: *const Map,
-    fertilizer_to_water: *const Map,
-    water_to_light: *const Map,
-    light_to_temperature: *const Map,
-    temperature_to_humidity: *const Map,
-    humidity_to_location: *const Map,
-) u32 {
-    const soil = seed_to_soil.apply(seed);
-    const fertilizer = soil_to_fertilizer.apply(soil);
-    const water = fertilizer_to_water.apply(fertilizer);
-    const light = water_to_light.apply(water);
-    const temperature = light_to_temperature.apply(light);
-    const humidity = temperature_to_humidity.apply(temperature);
-    return humidity_to_location.apply(humidity);
+const Mappings = struct {
+    seed_to_soil: Map,
+    soil_to_fertilizer: Map,
+    fertilizer_to_water: Map,
+    water_to_light: Map,
+    light_to_temperature: Map,
+    temperature_to_humidity: Map,
+    humidity_to_location: Map,
+
+    fn apply(self: *const Mappings, seed: u32) u32 {
+        const soil = self.seed_to_soil.apply(seed);
+        const fertilizer = self.soil_to_fertilizer.apply(soil);
+        const water = self.fertilizer_to_water.apply(fertilizer);
+        const light = self.water_to_light.apply(water);
+        const temperature = self.light_to_temperature.apply(light);
+        const humidity = self.temperature_to_humidity.apply(temperature);
+        return self.humidity_to_location.apply(humidity);
+    }
+
+    fn parse(allocator: Allocator, input: []const u8) !Mappings {
+        var blocks = std.mem.splitSequence(u8, input, NL ** 2);
+
+        var seed_to_soil = try Map.parse(allocator, blocks.next().?);
+        errdefer seed_to_soil.deinit();
+        var soil_to_fertilizer = try Map.parse(allocator, blocks.next().?);
+        errdefer soil_to_fertilizer.deinit();
+        var fertilizer_to_water = try Map.parse(allocator, blocks.next().?);
+        errdefer fertilizer_to_water.deinit();
+        var water_to_light = try Map.parse(allocator, blocks.next().?);
+        errdefer water_to_light.deinit();
+        var light_to_temperature = try Map.parse(allocator, blocks.next().?);
+        errdefer light_to_temperature.deinit();
+        var temperature_to_humidity = try Map.parse(allocator, blocks.next().?);
+        errdefer temperature_to_humidity.deinit();
+        var humidity_to_location = try Map.parse(allocator, blocks.next().?);
+        errdefer humidity_to_location.deinit();
+
+        return .{
+            .seed_to_soil = seed_to_soil,
+            .soil_to_fertilizer = soil_to_fertilizer,
+            .fertilizer_to_water = fertilizer_to_water,
+            .water_to_light = water_to_light,
+            .light_to_temperature = light_to_temperature,
+            .temperature_to_humidity = temperature_to_humidity,
+            .humidity_to_location = humidity_to_location,
+        };
+    }
+
+    fn deinit(self: Mappings) void {
+        self.humidity_to_location.deinit();
+        self.temperature_to_humidity.deinit();
+        self.light_to_temperature.deinit();
+        self.water_to_light.deinit();
+        self.fertilizer_to_water.deinit();
+        self.soil_to_fertilizer.deinit();
+        self.seed_to_soil.deinit();
+    }
+};
+
+test "simple input" {
+    const testing = std.testing;
+    const input = @embedFile("test_input.txt");
+    try testing.expectEqual(@as(u32, 46), try run(testing.allocator, input));
 }
