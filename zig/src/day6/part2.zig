@@ -36,14 +36,17 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
     const times = mem.tokenizeScalar(u8, lines.first()[11..], ' ');
     const distances = mem.tokenizeScalar(u8, lines.rest()[11..], ' ');
     var distances_per_times = zip([]const u8, []const u8, distances, times);
-    var actual_best_distance: f64 = 0;
-    var actual_time_category: f64 = 0;
+    var actual_distance_and_time = @Vector(2, f64){ 0, 0 };
     while (distances_per_times.next()) |distance_pet_time| {
-        const best_distance: f64 = @floatFromInt(try fmt.parseInt(u32, distance_pet_time.first, 10));
-        const time_category: f64 = @floatFromInt(try fmt.parseInt(u32, distance_pet_time.second, 10));
-        actual_best_distance = actual_best_distance * math.pow(f64, 10, @ceil(@log10(best_distance))) + best_distance;
-        actual_time_category = actual_time_category * math.pow(f64, 10, @ceil(@log10(time_category))) + time_category;
+        const distance_and_time = @Vector(2, f64){
+            @floatFromInt(try fmt.parseInt(u32, distance_pet_time.first, 10)),
+            @floatFromInt(try fmt.parseInt(u32, distance_pet_time.second, 10)),
+        };
+        const power = @ceil(@log10(distance_and_time));
+        actual_distance_and_time = actual_distance_and_time * @Vector(2, f64){ math.pow(f64, 10, power[0]), math.pow(f64, 10, power[1]) } + distance_and_time;
     }
+    const actual_time_category = actual_distance_and_time[1];
+    const actual_best_distance = actual_distance_and_time[0];
     const discriminant_sqrt: f64 = @sqrt(actual_time_category * actual_time_category - 4 * actual_best_distance);
     const min_time = (actual_time_category - discriminant_sqrt) / 2;
     const max_time = (actual_time_category + discriminant_sqrt) / 2;
