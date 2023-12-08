@@ -35,7 +35,7 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
     };
     const times = mem.tokenizeScalar(u8, lines.first()[11..], ' ');
     const distances = mem.tokenizeScalar(u8, lines.rest()[11..], ' ');
-    var distances_per_times = zip([]const u8, []const u8, distances, times);
+    var distances_per_times = zip(distances, times);
     var actual_distance_and_time = @Vector(2, f64){ 0, 0 };
     while (distances_per_times.next()) |distance_pet_time| {
         const distance_and_time = @Vector(2, f64){
@@ -62,9 +62,18 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
     return max_time_int - min_time_int + 1;
 }
 
-fn zip(comptime T: type, comptime U: type, iter1: anytype, iter2: anytype) struct {
+fn zip(iter1: anytype, iter2: anytype) struct {
     iter1: @TypeOf(iter1),
     iter2: @TypeOf(iter2),
+
+    const T = @TypeOf(blk: {
+        var iter = iter1;
+        break :blk iter.next().?;
+    });
+    const U = @TypeOf(blk: {
+        var iter = iter2;
+        break :blk iter.next().?;
+    });
 
     const Pair = struct {
         first: T,
