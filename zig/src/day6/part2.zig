@@ -39,10 +39,10 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
     var actual_distance_and_time = @Vector(2, f64){ 0, 0 };
     while (distances_per_times.next()) |distance_pet_time| {
         const distance_and_time = @Vector(2, f64){
-            @floatFromInt(try fmt.parseInt(u32, distance_pet_time.first, 10)),
-            @floatFromInt(try fmt.parseInt(u32, distance_pet_time.second, 10)),
+            @floatFromInt(try fmt.parseInt(u32, distance_pet_time[0], 10)),
+            @floatFromInt(try fmt.parseInt(u32, distance_pet_time[1], 10)),
         };
-        const power = @Vector(2, f64){ @floatFromInt(distance_pet_time.first.len), @floatFromInt(distance_pet_time.second.len) };
+        const power = @Vector(2, f64){ @floatFromInt(distance_pet_time[0].len), @floatFromInt(distance_pet_time[1].len) };
         actual_distance_and_time = actual_distance_and_time * @Vector(2, f64){ math.pow(f64, 10, power[0]), math.pow(f64, 10, power[1]) } + distance_and_time;
     }
     const actual_time_category = actual_distance_and_time[1];
@@ -69,15 +69,10 @@ fn zip(iter1: anytype, iter2: anytype) struct {
     const T = @typeInfo(@typeInfo(@TypeOf(@TypeOf(iter1).next)).Fn.return_type.?).Optional.child;
     const U = @typeInfo(@typeInfo(@TypeOf(@TypeOf(iter2).next)).Fn.return_type.?).Optional.child;
 
-    const Pair = struct {
-        first: T,
-        second: U,
-    };
-
-    fn next(self: *@This()) ?Pair {
+    fn next(self: *@This()) ?struct { T, U } {
         var first: T = self.iter1.next() orelse return null;
         var second: U = self.iter2.next() orelse return null;
-        return .{ .first = first, .second = second };
+        return .{ first, second };
     }
 } {
     return .{ .iter1 = iter1, .iter2 = iter2 };

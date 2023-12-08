@@ -38,8 +38,8 @@ pub fn run(allocator: Allocator, input: []const u8) !u32 {
     var distances_per_times = zip(distances, times);
     var freedom: u32 = 1;
     while (distances_per_times.next()) |distance_pet_time| {
-        const best_distance: f32 = @floatFromInt(try fmt.parseInt(u32, distance_pet_time.first, 10));
-        const time_category: f32 = @floatFromInt(try fmt.parseInt(u32, distance_pet_time.second, 10));
+        const best_distance: f32 = @floatFromInt(try fmt.parseInt(u32, distance_pet_time[0], 10));
+        const time_category: f32 = @floatFromInt(try fmt.parseInt(u32, distance_pet_time[1], 10));
         const discriminant_sqrt: f32 = @sqrt(time_category * time_category - 4 * best_distance);
         const min_time = (time_category - discriminant_sqrt) / 2;
         const max_time = (time_category + discriminant_sqrt) / 2;
@@ -64,15 +64,10 @@ fn zip(iter1: anytype, iter2: anytype) struct {
     const T = @typeInfo(@typeInfo(@TypeOf(@TypeOf(iter1).next)).Fn.return_type.?).Optional.child;
     const U = @typeInfo(@typeInfo(@TypeOf(@TypeOf(iter2).next)).Fn.return_type.?).Optional.child;
 
-    const Pair = struct {
-        first: T,
-        second: U,
-    };
-
-    fn next(self: *@This()) ?Pair {
+    fn next(self: *@This()) ?struct { T, U } {
         var first: T = self.iter1.next() orelse return null;
         var second: U = self.iter2.next() orelse return null;
-        return .{ .first = first, .second = second };
+        return .{ first, second };
     }
 } {
     return .{ .iter1 = iter1, .iter2 = iter2 };
