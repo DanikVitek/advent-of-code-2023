@@ -5,6 +5,7 @@ const days = [_]type{
     @import("day4.zig"),
     @import("day5.zig"),
     @import("day6.zig"),
+    @import("day7.zig"),
 };
 
 pub fn main() !void {

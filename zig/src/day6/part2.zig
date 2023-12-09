@@ -80,5 +80,5 @@ fn zip(iter1: anytype, iter2: anytype) struct {
 test "simple input" {
     const testing = std.testing;
     const input = @embedFile("test_input.txt");
-    try testing.expectEqual(@as(u64, 71503), try run(testing.allocator, input));
+    try testing.expectEqual(@as(u64, 71503), try run(input));
 }
