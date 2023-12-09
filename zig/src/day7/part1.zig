@@ -218,32 +218,32 @@ const Hand = struct {
             counts[@intFromEnum(card) - 2] += 1;
         }
 
-        var pairCount: u2 = 0;
-        var threeCount: u1 = 0;
-        var fourCount: u1 = 0;
-        var fiveCount: u1 = 0;
+        var pair_count: u2 = 0;
+        var three_count: u1 = 0;
+        var four_count: u1 = 0;
+        var five_count: u1 = 0;
         for (counts) |count| {
             switch (count) {
-                0, 1 => {},
-                2 => pairCount += 1,
-                3 => threeCount += 1,
-                4 => fourCount += 1,
-                5 => fiveCount += 1,
+                0, 1 => continue,
+                2 => pair_count += 1,
+                3 => three_count += 1,
+                4 => four_count += 1,
+                5 => five_count += 1,
                 else => unreachable,
             }
         }
 
-        if (fiveCount == 1) {
+        if (five_count == 1) {
             return .five_of_a_kind;
-        } else if (fourCount == 1) {
+        } else if (four_count == 1) {
             return .four_of_a_kind;
-        } else if (threeCount == 1 and pairCount == 1) {
+        } else if (three_count == 1 and pair_count == 1) {
             return .full_house;
-        } else if (threeCount == 1) {
+        } else if (three_count == 1) {
             return .three_of_a_kind;
-        } else if (pairCount == 2) {
+        } else if (pair_count == 2) {
             return .two_pair;
-        } else if (pairCount == 1) {
+        } else if (pair_count == 1) {
             return .one_pair;
         } else {
             return .high_card;
