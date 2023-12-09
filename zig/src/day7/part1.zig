@@ -100,8 +100,6 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
                 }
                 break :blk result.value_ptr.*;
             };
-            // const lhs_type: HandType = lhs.hand.handType();
-            // const rhs_type: HandType = rhs.hand.handType();
             if (lhs_type != rhs_type) {
                 return lhs_type.compare(rhs_type) == .lt;
             }
@@ -117,7 +115,7 @@ pub fn run(allocator: Allocator, input: []const u8) !u64 {
     };
 
     var comparator = Comparator.init(allocator);
-    mem.sort(Entry, entries, &comparator, Comparator.lessThan);
+    mem.sortUnstable(Entry, entries, &comparator, Comparator.lessThan);
     comparator.deinit();
 
     var total_winnings: u64 = 0;
@@ -226,11 +224,12 @@ const Hand = struct {
         var fiveCount: u1 = 0;
         for (counts) |count| {
             switch (count) {
+                0, 1 => {},
                 2 => pairCount += 1,
                 3 => threeCount += 1,
                 4 => fourCount += 1,
                 5 => fiveCount += 1,
-                else => {},
+                else => unreachable,
             }
         }
 
