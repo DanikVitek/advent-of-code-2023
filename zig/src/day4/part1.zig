@@ -8,7 +8,7 @@ pub fn run(allocator: Allocator, input: []const u8) !u32 {
     var points: u32 = 0;
 
     while (cards_iter.next()) |card| {
-        points += try scorePoints(try processCard(allocator, card));
+        points += scorePoints(try processCard(allocator, card));
     }
 
     return points;
@@ -46,21 +46,18 @@ fn processCard(allocator: Allocator, card: []const u8) !u32 {
     return wins;
 }
 
-fn scorePoints(wins: u32) error{Overflow}!u32 {
-    return math.powi(u32, 2, math.sub(u32, wins, 1) catch return 0) catch |err| switch (err) {
-        error.Overflow => return error.Overflow,
-        else => unreachable,
-    };
+fn scorePoints(wins: u32) u32 {
+    return math.shl(u32, 1, math.sub(u32, wins, 1) catch return 0);
 }
 
 test scorePoints {
     const testing = std.testing;
 
-    try testing.expectEqual(@as(u32, 8), try scorePoints(4));
-    try testing.expectEqual(@as(u32, 4), try scorePoints(3));
-    try testing.expectEqual(@as(u32, 2), try scorePoints(2));
-    try testing.expectEqual(@as(u32, 1), try scorePoints(1));
-    try testing.expectEqual(@as(u32, 0), try scorePoints(0));
+    try testing.expectEqual(@as(u32, 8), scorePoints(4));
+    try testing.expectEqual(@as(u32, 4), scorePoints(3));
+    try testing.expectEqual(@as(u32, 2), scorePoints(2));
+    try testing.expectEqual(@as(u32, 1), scorePoints(1));
+    try testing.expectEqual(@as(u32, 0), scorePoints(0));
 }
 
 test processCard {
